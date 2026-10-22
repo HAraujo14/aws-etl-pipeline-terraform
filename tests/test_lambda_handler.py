@@ -3,8 +3,8 @@ import json
 import boto3
 import pytest
 from moto import mock_aws
-from tests.constants import INGEST_DATE
 
+from tests.constants import INGEST_DATE
 from weather_etl.exceptions import ConfigError
 from weather_etl.lambda_handler import handler
 from weather_etl.transform import parquet_bytes_to_frame

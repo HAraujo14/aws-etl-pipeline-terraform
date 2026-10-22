@@ -2,8 +2,8 @@ from collections.abc import Sequence
 from datetime import date
 
 import pandas as pd
-from tests.constants import INGEST_DATE, RUN_AT
 
+from tests.constants import INGEST_DATE, RUN_AT
 from weather_etl.config import Location
 from weather_etl.quality import QualityReport, run_checks
 from weather_etl.transform import payload_to_frame

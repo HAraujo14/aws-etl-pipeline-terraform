@@ -5,8 +5,8 @@ from datetime import date
 import boto3
 import pytest
 from moto import mock_aws
-from tests.constants import INGEST_DATE
 
+from tests.constants import INGEST_DATE
 from weather_etl.config import Location
 from weather_etl.exceptions import ConfigError
 from weather_etl.paths import curated_parquet_key
