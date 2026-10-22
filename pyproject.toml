@@ -1,0 +1,51 @@
+[project]
+name = "weather-etl"
+version = "0.1.0"
+description = "Portfolio ETL pipeline: Open-Meteo forecasts to Parquet with data quality checks."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+  "boto3==1.43.117",
+  "numpy==2.5.4",
+  "pandas==2.2.3",
+  "pyarrow==18.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black==24.10.0",
+  "moto[s3]==5.2.4",
+  "pytest==8.4.2",
+  "ruff==0.6.9",
+]
+
+[project.scripts]
+weather-etl = "weather_etl.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["weather_etl"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["src", "."]

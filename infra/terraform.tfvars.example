@@ -1,0 +1,7 @@
+aws_region   = "us-east-1"
+project_name = "weather-etl"
+environment  = "dev"
+
+# Leave this false for the first apply. Push the container image, then set it
+# to true and apply again. See the README.
+image_pushed = false

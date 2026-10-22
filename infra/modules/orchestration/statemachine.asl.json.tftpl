@@ -1,0 +1,68 @@
+{
+  "Comment": "Fetch Open-Meteo forecasts, then publish Parquet only when data quality checks pass.",
+  "StartAt": "Extract",
+  "States": {
+    "Extract": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${function_arn}",
+        "Payload": {
+          "action": "extract",
+          "ingest_date.$": "$.ingest_date"
+        }
+      },
+      "ResultSelector": {
+        "ingest_date.$": "$.Payload.ingest_date",
+        "raw_keys.$": "$.Payload.raw_keys"
+      },
+      "ResultPath": "$.extract",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "Transform"
+    },
+    "Transform": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "${function_arn}",
+        "Payload": {
+          "action": "transform",
+          "ingest_date.$": "$.extract.ingest_date"
+        }
+      },
+      "ResultSelector": {
+        "ingest_date.$": "$.Payload.ingest_date",
+        "curated_key.$": "$.Payload.curated_key",
+        "row_count.$": "$.Payload.row_count",
+        "quality_passed.$": "$.Payload.quality_passed"
+      },
+      "ResultPath": "$.transform",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "End": true
+    }
+  }
+}
